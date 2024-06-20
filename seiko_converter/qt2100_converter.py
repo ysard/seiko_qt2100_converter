@@ -42,18 +42,22 @@ class SeikoQT2100GraphTool:
 
     @property
     def parsed_values(self):
+        """Get parsed values from the parser"""
         return self.parser.parsed_values
 
     @property
     def parsed_timestamps(self):
+        """Get parsed timestamps from the parser (can be empty)"""
         return self.parser.parsed_timestamps
 
     @property
     def rate_mode(self):
+        """Get sec/day rate from the parser"""
         return self.parser.get_rate_mode()
 
     @property
     def print_mode(self):
+        """Get print mode from the parser"""
         return self.parser.get_print_mode()
 
     def to_csv(self, output_dir="."):
