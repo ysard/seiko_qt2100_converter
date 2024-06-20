@@ -81,6 +81,45 @@ class SeikoQT2100Parser:
         self.rate_mode = None
 
     def parse(self):
+        """Load the file content in memory
+
+        Description of the printer modes and their file format.
+
+        File format header:
+
+            ``ESC 0 rate_mode``
+
+        Global value format (8 bytes per value):
+
+            ``ESC 1 print_mode flags unknown val1 val2 val3``
+
+        Error format:
+
+            ``ESC 1 print_mode flags``
+
+        Print Modes:
+
+            - Mode C:
+                print_mode: 0
+
+            - Mode B 1S:
+                print_mode: 3
+
+            - Modes A 1S/2M:
+                print_mode: 1 or 2
+
+        Flags:
+
+            - 0x20: Measurement error
+            - 0x80: Hz acquisition mode (Quartz watch (LCD or stepper))
+            - 0x00: Second acquisition mode (default)
+            - 0x01: Negative sign of the measured value
+
+        RetroPrinter project adds timestamps in the file for every value with
+        the following format (5 bytes):
+
+            ``ESC T hours minutes seconds``
+        """
         escmode = False
         seiko_mode = False
         timestamp_mode = False
