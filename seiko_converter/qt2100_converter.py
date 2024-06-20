@@ -32,6 +32,7 @@ class SeikoQT2100GraphTool:
     """Graph & CSV builder using the SeikoQT2100Parser parser on the files
     produced by the Seiko QT-2100 Timegrapher device
     """
+
     # Graph colors
     RED = "#d62728"
     BLUE = "#1f77b4"
@@ -108,26 +109,40 @@ class SeikoQT2100GraphTool:
             seiko_writer.writerows(rows)
 
     def to_graph(self, *args, **kwargs):
-        """
-        Mode 1B:
-            no accumulated values: just 1 trace centered on vertical axis around 0
+        """Build and export a graph according to the print modes of the parsed data
+
+        Mode B 1S:
+            For Quartz watch (LCD or stepper).
+            No accumulated values: just 1 "vertical" line for sec/day rate.
 
         Mode A (10S, 2M):
-            accumulated rates
+            For mechanical watch; Timegrapher style plot of the accumulated rates.
 
         Mode C:
-            "%s RATE + %d%d.%d%d%d SEC/DAY",timeStampString,digit2,digit3,digit4,digit5,digit6
-
+            For Quartz watch (LCD or stepper).
+            Same data used by the graphical mode B 1S.
+            => not implemented, you should use :meth`to_csv` method for this one.
         """
         if self.print_mode in ("A 10S", "A 2M"):
             self.build_graph_mode_a(*args, **kwargs)
         elif self.print_mode == "B 1S":
             self.build_graph_mode_b(*args, **kwargs)
         else:
-            print(self.print_mode)
-            print("You should use to_csv() method instead")
+            raise NotImplementedError(
+                "For this mode, you should use to_csv() method instead"
+            )
 
     def build_graph_mode_b(self, output_filename=None, debug=False):
+        """Build graph for data generated in print mode B 1S
+
+        For Quartz watch (LCD or stepper).
+        No accumulated values: just 1 "vertical" line for sec/day rate.
+
+        :param output_filename: Output filepath for the pdf file.
+        :key debug: (Optional) Show the graph in matplotlib window. (default: False)
+        :type output_filename: str
+        :type debug: bool
+        """
         # Handle erronerous values during measurement
         mean_rate = stat.mean(val for val in self.parsed_values if val)
         formatted_values = []
@@ -196,7 +211,9 @@ class SeikoQT2100GraphTool:
         assert not plt.get_fignums()
 
     def build_graph_mode_a(self, output_filename=None, debug=False):
-        """
+        """Build graph for data generated in print mode A 1S/2M
+
+        For mechanical watch; Timegrapher style plot of the accumulated rates.
 
         :About error handling:
 
@@ -207,9 +224,10 @@ class SeikoQT2100GraphTool:
         Not replacing them will corrupt the graph (unless the data is deleted
         in pairs.
 
-        :param output_dir:
-        :param debug:
-        :return:
+        :param output_filename: Output filepath for the pdf file.
+        :key debug: (Optional) Show the graph in matplotlib window. (default: False)
+        :type output_filename: str
+        :type debug: bool
         """
         MEASURES_PER_DAY = 50
 
