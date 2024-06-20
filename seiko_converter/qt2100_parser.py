@@ -248,13 +248,3 @@ class SeikoQT2100Parser:
         See :meth:`PRINT_MODES`.
         """
         return SeikoQT2100Parser.PRINT_MODES[self.print_mode]
-
-
-def main():
-    # Usage example
-    obj = SeikoQT2100Parser("./data/seiko_qt2100_A10S.raw")
-    obj.parse()
-
-
-if __name__ == "__main__":
-    main()
