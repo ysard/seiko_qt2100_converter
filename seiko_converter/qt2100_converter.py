@@ -314,6 +314,7 @@ class SeikoQT2100GraphTool:
             y="cum_values",
             title=f"Mode {self.print_mode} - {self.rate_mode.title()}",
             c=colors,
+            zorder=2,
         )
 
         # Improve lisibility
