@@ -114,7 +114,7 @@ class SeikoQT2100Parser:
                 if data is None:
                     return
                 self.rate_mode = data[0]
-                print("rate:", self.get_rate())
+                print("rate:", self.get_rate_mode())
 
             # Begin to extract values only; ESC 1
             if escmode and databyte == ord("1"):
@@ -201,7 +201,7 @@ class SeikoQT2100Parser:
             seiko_mode = False
             timestamp_mode = False
 
-    def get_rate(self):
+    def get_rate_mode(self):
         """Get the current rate mode of the file
 
         See :meth:`RATE_MODES`.
