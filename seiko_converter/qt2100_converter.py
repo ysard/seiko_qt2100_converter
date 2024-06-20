@@ -60,7 +60,16 @@ class SeikoQT2100GraphTool:
         """Get print mode from the parser"""
         return self.parser.get_print_mode()
 
-    def to_csv(self, output_dir="."):
+    def get_output_filename(self, suffix=""):
+        """Get filename based on the original parsed filename and the given suffix
+
+        :param suffix: dotted filename suffix
+        :type suffix: str
+        """
+        filename = Path(self.parser.raw_filename)
+        return Path(filename.stem).with_suffix(suffix)
+
+    def to_csv(self, output_filename=None):
         """Produce a CSV file based on the parsed values
 
         Erroneous values are displayed in the format ``"sign OUT OF RANGE"``,
@@ -92,12 +101,13 @@ class SeikoQT2100GraphTool:
             rows = ((val,) for val in formatted_values)
 
         # Dump to CSV
-        with open(Path(output_dir) / "my_qt2100.csv", "w", newline="") as csvfile:
+        filename = output_filename or self.get_output_filename(".csv")
+        with open(filename, "w", newline="") as csvfile:
             seiko_writer = csv.writer(csvfile)
             seiko_writer.writerow(header)
             seiko_writer.writerows(rows)
 
-    def to_graph(self, output_dir=".", debug=True):
+    def to_graph(self, *args, **kwargs):
         """
         Mode 1B:
             no accumulated values: just 1 trace centered on vertical axis around 0
@@ -110,14 +120,14 @@ class SeikoQT2100GraphTool:
 
         """
         if self.print_mode in ("A 10S", "A 2M"):
-            self.build_graph_mode_a(output_dir=output_dir, debug=debug)
+            self.build_graph_mode_a(*args, **kwargs)
         elif self.print_mode == "B 1S":
-            self.build_graph_mode_b(output_dir=output_dir, debug=debug)
+            self.build_graph_mode_b(*args, **kwargs)
         else:
             print(self.print_mode)
             print("You should use to_csv() method instead")
 
-    def build_graph_mode_b(self, output_dir=".", debug=False):
+    def build_graph_mode_b(self, output_filename=None, debug=False):
         # Handle erronerous values during measurement
         mean_rate = stat.mean(val for val in self.parsed_values if val)
         formatted_values = []
@@ -173,8 +183,10 @@ class SeikoQT2100GraphTool:
         ax.yaxis.grid(True, which="minor", linestyle=":")
         ax.yaxis.grid(True, which="major", linestyle="-")
 
+        # Export the graph
         fig = ax.get_figure()
-        fig.savefig(Path(output_dir) / "figure.pdf")
+        filename = output_filename or self.get_output_filename(".pdf")
+        fig.savefig(filename)
 
         if debug:
             plt.show()
@@ -183,7 +195,7 @@ class SeikoQT2100GraphTool:
         plt.close(fig)
         assert not plt.get_fignums()
 
-    def build_graph_mode_a(self, output_dir=".", debug=False):
+    def build_graph_mode_a(self, output_filename=None, debug=False):
         """
 
         :About error handling:
@@ -322,8 +334,10 @@ class SeikoQT2100GraphTool:
         # ax.invert_xaxis()
         # ax.invert_yaxis()
 
+        # Export the graph
         fig = ax.get_figure()
-        fig.savefig(Path(output_dir) / "figure.pdf")
+        filename = output_filename or self.get_output_filename(".pdf")
+        fig.savefig(filename)
 
         if debug:
             plt.show()
