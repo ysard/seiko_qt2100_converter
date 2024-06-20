@@ -70,7 +70,7 @@ class SeikoQT2100GraphTool:
         filename = Path(self.parser.raw_filename)
         return Path(filename.stem).with_suffix(suffix)
 
-    def to_csv(self, output_filename=None):
+    def to_csv(self, output_filename=None, **kwargs):
         """Produce a CSV file based on the parsed values
 
         Erroneous values are displayed in the format ``"sign OUT OF RANGE"``,
