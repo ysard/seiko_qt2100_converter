@@ -187,12 +187,10 @@ class SeikoQT2100Parser:
                     break
 
                 data = unpack("BB", data)
-                byte3, ukn_flag = data
+                byte3, ukn_flag = data  # TODO: For now byte4 is not used
 
-                sign = -1 if byte3 & 1 else 1
                 # 1st bit is the sign flag
-                # if sign == -1:
-                #     print("negative value")
+                sign = -1 if byte3 & 1 else 1
 
                 if byte3 & 128 == 128:  # 0x80
                     sign_chr = "+" if sign else "-"
@@ -220,9 +218,7 @@ class SeikoQT2100Parser:
                 if data is None:
                     break
 
-                # values:
-                # ?? val1, val2, val3
-                sign = -1 if byte3 & 1 else 1
+                # Extract values: val1, val2, val3
                 measure = int(hexlify(data)) / 1000 * sign
                 print(">", measure)
 
