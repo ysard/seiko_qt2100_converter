@@ -251,30 +251,9 @@ class SeikoQT2100Parser:
 
 
 def main():
-    obj = SeikoQT2100Parser("./seiko_qt2100_A10S.raw")
+    # Usage example
+    obj = SeikoQT2100Parser("./data/seiko_qt2100_A10S.raw")
     obj.parse()
-    obj.to_csv()
-    obj.to_graph()
-    exit()
-
-    # obj = SeikoQT2100Parser("./seiko_qt2100_A10S_timestamped.raw")
-    # obj.parse()
-    # obj.to_csv()
-
-    obj = SeikoQT2100Parser("./seiko_qt2100_B1S_1.raw")
-    obj.parse()
-    obj.to_csv()
-    obj.to_graph()
-
-    obj = SeikoQT2100Parser("./seiko_qt2100_B1S_2.raw")
-    obj.parse()
-    obj.to_csv()
-    obj.to_graph()
-
-    obj = SeikoQT2100Parser("./seiko_qt2100_999999.raw")
-    obj.parse()
-    obj.to_csv()
-    obj.to_graph()
 
 
 if __name__ == "__main__":
