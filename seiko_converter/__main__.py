@@ -15,21 +15,89 @@
 #
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# Standard imports
+import sys
 import argparse
+from pathlib import Path
+
+# Custom imports
+from seiko_converter import __version__
 from seiko_converter.qt2100_parser import SeikoQT2100Parser
 from seiko_converter.qt2100_converter import SeikoQT2100GraphTool
 
 
-def main():
-    parser = SeikoQT2100Parser("./data/seiko_qt2100_A10S.raw")
+def seiko_converter_entry_point(
+    *args, input_file=None, csv=False, graph=False, **kwargs
+):
+    """Init & call the parser & graph functions"""
+    parser = SeikoQT2100Parser(input_file)
     obj = SeikoQT2100GraphTool(parser)
-    obj.to_csv()
-    obj.to_graph()
+    if csv:
+        obj.to_csv(**kwargs)
+    if graph:
+        obj.to_graph(**kwargs)
 
-    parser = SeikoQT2100Parser("./data/seiko_qt2100_B1S_1.raw")
-    obj = SeikoQT2100GraphTool(parser)
-    obj.to_csv()
-    obj.to_graph()
+
+def args_to_params(args):
+    """Return argparse namespace as a dict {variable name: value}"""
+    return dict(vars(args).items())
+
+
+def main():
+    """Entry point and argument parser"""
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+
+    parser.add_argument(
+        "-i", "--input_file", help="Raw file from device.", type=Path, required=True
+    )
+
+    parser.add_argument(
+        "-o",
+        "--output_filename",
+        nargs="?",
+        help="Generated file name.",
+        default=None,
+        type=Path,
+    )
+
+    parser.add_argument(
+        "--csv",
+        help="Extract the parsed values into a CSV file.",
+        action="store_true",
+    )
+
+    parser.add_argument(
+        "-g",
+        "--graph",
+        help="Extract the parsed values into a timegrapher style file.",
+        action="store_true",
+    )
+
+    parser.add_argument(
+        "-d",
+        "--debug",
+        nargs="?",
+        help="Show the matplotlib windows.",
+        default=False,
+    )
+
+    parser.add_argument(
+        "-v", "--version", action="version", version="%(prog)s " + __version__
+    )
+
+    # Get program args and launch associated command
+    args = parser.parse_args()
+    params = args_to_params(args)
+
+    # Quick check
+    assert params[
+        "input_file"
+    ].exists(), f"Input file <{params['input_file']}> not found!"
+
+    # Do magic
+    seiko_converter_entry_point(**params)
 
 
 if __name__ == "__main__":
