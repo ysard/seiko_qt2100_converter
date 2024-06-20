@@ -77,9 +77,8 @@ def main():
     parser.add_argument(
         "-d",
         "--debug",
-        nargs="?",
         help="Show the matplotlib windows.",
-        default=False,
+        action="store_true",
     )
 
     parser.add_argument(
