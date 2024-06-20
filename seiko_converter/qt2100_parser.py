@@ -19,7 +19,6 @@
 from pathlib import Path
 from struct import unpack
 from binascii import hexlify
-from functools import partial
 
 
 class SeikoQT2100Parser:

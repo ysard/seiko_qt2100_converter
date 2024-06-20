@@ -16,7 +16,6 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # Standard imports
-import sys
 import argparse
 from pathlib import Path
 
