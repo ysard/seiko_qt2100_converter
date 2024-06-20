@@ -144,7 +144,7 @@ class SeikoQT2100Parser:
                 print("SEIKO header probe")
                 data = read_from_buffer(1)
                 if data is None:
-                    return
+                    break
                 self.rate_mode = data[0]
                 print("rate:", self.get_rate_mode())
 
@@ -164,7 +164,7 @@ class SeikoQT2100Parser:
                 # been no timestamp: mode byte
                 data = read_from_buffer(5)
                 if data is None:
-                    return
+                    break
 
                 data = unpack(">BBBH", data)
                 hours, minutes, seconds, esc1_header = data
@@ -185,7 +185,7 @@ class SeikoQT2100Parser:
 
                 data = read_from_buffer(2)
                 if data is None:
-                    return
+                    break
 
                 data = unpack("BB", data)
                 byte3, ukn_flag = data
@@ -219,7 +219,7 @@ class SeikoQT2100Parser:
 
                 data = read_from_buffer(3)
                 if data is None:
-                    return
+                    break
 
                 # values:
                 # ?? val1, val2, val3
@@ -232,6 +232,8 @@ class SeikoQT2100Parser:
             escmode = False
             seiko_mode = False
             timestamp_mode = False
+
+        print(f"Parsed {len(self.parsed_values)} values")
 
     def get_rate_mode(self):
         """Get the current rate mode of the file
