@@ -29,6 +29,13 @@ from seiko_converter.qt2100_parser import SeikoQT2100Parser
 
 
 class SeikoQT2100GraphTool:
+    """Graph & CSV builder using the SeikoQT2100Parser parser on the files
+    produced by the Seiko QT-2100 Timegrapher device
+    """
+    # Graph colors
+    RED = "#d62728"
+    BLUE = "#1f77b4"
+
     def __init__(self, parser: SeikoQT2100Parser):
         self.parser = parser
         self.parser.parse()
@@ -122,7 +129,7 @@ class SeikoQT2100GraphTool:
 
         # Build colors & highlight erroneous values in red
         colors = [
-            "#d62728" if idx in erroneous_indexes else "#1f77b4"
+            self.RED if idx in erroneous_indexes else self.BLUE
             for idx in range(len(formatted_values))
         ]
 
@@ -269,7 +276,7 @@ class SeikoQT2100GraphTool:
 
         # Build colors & highlight erroneous values in red
         colors = [
-            "#d62728" if idx in erroneous_indexes else "#1f77b4"
+            self.RED if idx in erroneous_indexes else self.BLUE
             for idx in range(len(formatted_values))
         ]
 
