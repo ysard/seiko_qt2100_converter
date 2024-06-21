@@ -214,8 +214,8 @@ class SeikoQT2100Parser:
                     LOGGER.error("Acquisition mode: Unknwon; %d", acquisition_mode)
                     raise Exception
 
-                if acquisition_mode & 16 == 16:  # 0x10 flag, in 0x30 with 0x20 gate mode
-                    print("1st val of Hz mode ?")
+                if acquisition_mode & 16 == 16:  # 0x10 flag, in 0x30 with 0x20 acquisition mode
+                    LOGGER.warning("1st val of Hz mode ?; %d", acquisition_mode)
 
                 data = read_from_buffer(3)
                 if data is None:

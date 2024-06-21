@@ -39,4 +39,4 @@ check_code:
 
 archive:
 	# Create upstream src archive
-	git archive HEAD --prefix='seiko_converter-$(PROJECT_VERSION).orig/' | gzip > ../seiko_converter-$(PROJECT_VERSION).orig.tar.gz
+	git archive HEAD --prefix='seiko-converter-$(PROJECT_VERSION).orig/' | gzip > ../seiko-converter-$(PROJECT_VERSION).orig.tar.gz
