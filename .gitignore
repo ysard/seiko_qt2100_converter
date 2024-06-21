@@ -6,6 +6,7 @@ doc/
 *.csv
 *.svg
 *.txt
+!images/*
 
 # PyCharm
 .idea/
