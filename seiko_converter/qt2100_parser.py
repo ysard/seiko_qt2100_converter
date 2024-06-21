@@ -231,14 +231,14 @@ class SeikoQT2100Parser:
         print(f"Parsed {len(self.parsed_values)} values")
 
     def get_rate_mode(self):
-        """Get the current rate mode of the file
+        """Get the current rate mode of the file (human-readable form)
 
         See :meth:`RATE_MODES`.
         """
         return SeikoQT2100Parser.RATE_MODES[self.rate_mode]
 
     def get_print_mode(self):
-        """Get the last print mode seen in the values
+        """Get the last print mode seen in the values (human-readable form)
 
         Should be the same for all the dataset...
 
