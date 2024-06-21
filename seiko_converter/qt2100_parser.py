@@ -48,18 +48,23 @@ class SeikoQT2100Parser:
         :param print_mode: Print mode set on the device, prefixing all values in
             `ESC 1` messages.
         :param rate_mode: Current rate mode specified in the `ESC 0 `header message.
+        :param acquisition_mode: Acquisition mode (Hz or Seconds) specified in
+            the 3rd byte of value messages.
         :type raw_filename: str
         :type raw_data: bytes
         :type parsed_values: list[float, None]
         :type parsed_timestamps: list[str]
-        :type print_mode:
-        :type rate_mode:
+        :type print_mode: int
+        :type rate_mode: int
+        :type acquisition_mode: int
 
     Class attributes:
         :param RATE_MODES: Existing rate modes specified in the `ESC 0` header message.
         :param PRINT_MODES: Existing print modes specified in all `ESC 1` messages.
+        :param ACQUISITION_MODES: Existing acquisition modes (Hz or Seconds)
         :type RATE_MODES: dict[int, str]
         :type PRINT_MODES: dict[int, str]
+        :type ACQUISITION_MODES: dict[int, str]
 
     """
 
@@ -77,6 +82,11 @@ class SeikoQT2100Parser:
         3: "B 1S",
     }
 
+    ACQUISITION_MODES = {
+        0: "Seconds",
+        32: "Hz",
+    }
+
     def __init__(self, raw_filename):
         """Constructor
 
@@ -89,6 +99,7 @@ class SeikoQT2100Parser:
         self.parsed_timestamps = list()
         self.print_mode = None
         self.rate_mode = None
+        self.acquisition_mode = None
 
     def parse(self):
         """Load the file content in memory
@@ -212,18 +223,22 @@ class SeikoQT2100Parser:
                     continue
 
                 # Remove the sign flag, and get the gat mode in use
-                acquisition_mode = byte3 & ~1
-                if acquisition_mode == 0:
-                    LOGGER.debug("Acquisition mode: Seconds; %d", acquisition_mode)
-                elif acquisition_mode & 32 == 32:  # 0x20
-                    LOGGER.debug("Acquisition mode: Hz; %d", acquisition_mode)
+                self.acquisition_mode = byte3 & 32
+                if self.acquisition_mode in self.ACQUISITION_MODES:
+                    # 0 or 32 (0x20)
+                    LOGGER.debug(
+                        "Acquisition mode: %s; %d",
+                        self.ACQUISITION_MODES[self.acquisition_mode],
+                        self.acquisition_mode
+                    )
                 else:
-                    LOGGER.error("Acquisition mode: Unknwon; %d", acquisition_mode)
+                    LOGGER.error("Acquisition mode: Unknwon; %d", self.acquisition_mode)
                     raise Exception
 
-                if acquisition_mode & 16 == 16:
+                if byte3 & 16 == 16:
                     # 0x10 flag, in 0x30 with 0x20 acquisition mode
-                    LOGGER.warning("1st val of Hz mode ?; %d", acquisition_mode)
+                    LOGGER.warning("1st val of Hz mode ?; %d", byte3 & ~1)
+
 
                 data = read_from_buffer(3)
                 if data is None:
@@ -256,3 +271,12 @@ class SeikoQT2100Parser:
         See :meth:`PRINT_MODES`.
         """
         return SeikoQT2100Parser.PRINT_MODES[self.print_mode]
+
+    def get_acquisition_mode(self):
+        """Get the last acquisition mode seen in the values (human-readable form)
+
+        Should be the same for all the dataset...
+
+        See :meth:`ACQUISITION_MODES`.
+        """
+        return SeikoQT2100Parser.ACQUISITION_MODES[self.acquisition_mode]
