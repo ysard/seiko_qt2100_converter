@@ -141,7 +141,7 @@ class SeikoQT2100GraphTool:
                 "For this mode, you should use to_csv() method instead"
             )
 
-    def build_graph_mode_b(self, output_filename=None, debug=False):
+    def build_graph_mode_b(self, output_filename=None, debug=False, **kwargs):
         """Build graph for data generated in print mode B 1S
 
         For Quartz watch (LCD or stepper).
@@ -220,7 +220,7 @@ class SeikoQT2100GraphTool:
         plt.close(fig)
         assert not plt.get_fignums()
 
-    def build_graph_mode_a(self, output_filename=None, debug=False):
+    def build_graph_mode_a(self, output_filename=None, debug=False, **kwargs):
         """Build graph for data generated in print mode A 1S/2M
 
         For mechanical watch; Timegrapher style plot of the accumulated rates.
