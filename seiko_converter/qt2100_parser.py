@@ -15,10 +15,13 @@
 #
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""Parsing functions grouped in SeikoQT2100Parser class"""
+
 # Standard imports
 from pathlib import Path
 from struct import unpack
 from binascii import hexlify
+
 # Custom imports
 from seiko_converter import commons as cm
 
@@ -214,7 +217,8 @@ class SeikoQT2100Parser:
                     LOGGER.error("Acquisition mode: Unknwon; %d", acquisition_mode)
                     raise Exception
 
-                if acquisition_mode & 16 == 16:  # 0x10 flag, in 0x30 with 0x20 acquisition mode
+                if acquisition_mode & 16 == 16:
+                    # 0x10 flag, in 0x30 with 0x20 acquisition mode
                     LOGGER.warning("1st val of Hz mode ?; %d", acquisition_mode)
 
                 data = read_from_buffer(3)

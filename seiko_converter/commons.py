@@ -16,8 +16,8 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """Logger settings and project constants"""
+
 # Standard imports
-from logging.handlers import RotatingFileHandler
 import logging
 
 
@@ -48,6 +48,7 @@ def logger(name=LOGGER_NAME):
 
 _logger = logging.getLogger(LOGGER_NAME)
 _logger.setLevel(LOG_LEVEL)
+
 
 def log_level(level):
     """Set terminal/file log level to the given one.

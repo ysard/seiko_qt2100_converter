@@ -15,6 +15,8 @@
 #
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""Graphical functions used to analyze parsed data, grouped in SeikoQT2100GraphTool class"""
+
 # Standard imports
 from pathlib import Path
 import csv
@@ -291,7 +293,9 @@ class SeikoQT2100GraphTool:
         ticks_mean = stat.mean(val for val in ticks if val)
         tocks_mean = stat.mean(val for val in tocks if val)
 
-        LOGGER.debug("Calculated averages, ticks: %s, tocks: %s", ticks_mean, tocks_mean)
+        LOGGER.debug(
+            "Calculated averages, ticks: %s, tocks: %s", ticks_mean, tocks_mean
+        )
         beat_error = ticks_mean + tocks_mean
         print("beat error", beat_error)
 
