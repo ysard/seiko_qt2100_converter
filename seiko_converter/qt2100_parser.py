@@ -32,7 +32,7 @@ class SeikoQT2100Parser:
     """Parser for the files produced by the Seiko QT-2100 Timegrapher device
 
     Attributes:
-        :param raw_filename: File to be opened.
+        :param raw_filename: Printer file to be opened.
         :param raw_data: Bytes read from the opened file.
         :param parsed_values: All the values emitted by the device in `ESC 1`
             messages.
@@ -78,6 +78,10 @@ class SeikoQT2100Parser:
     }
 
     def __init__(self, raw_filename):
+        """Constructor
+
+        :param raw_filename: Printer file to be parsed.
+        """
         self.raw_filename = raw_filename
         self.raw_data = Path(self.raw_filename).read_bytes()
 

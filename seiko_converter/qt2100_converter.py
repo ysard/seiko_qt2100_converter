@@ -43,6 +43,10 @@ class SeikoQT2100GraphTool:
     BLUE = "#1f77b4"
 
     def __init__(self, parser: SeikoQT2100Parser):
+        """Constructor
+
+        :param parser: Expect an initialised parser object on a printer file.
+        """
         self.parser = parser
         self.parser.parse()
 
