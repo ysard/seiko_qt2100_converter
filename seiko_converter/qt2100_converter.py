@@ -174,7 +174,7 @@ class SeikoQT2100GraphTool:
         serie = pd.DataFrame(
             {"xticks": list(range(len(formatted_values))), "values": formatted_values}
         )
-        LOGGER.info(seriedf["values"].describe())
+        LOGGER.info(serie["values"].describe())
 
         ax = serie.plot.line(style="-", y="values")
         serie.plot.scatter(
