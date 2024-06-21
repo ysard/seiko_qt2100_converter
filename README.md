@@ -2,7 +2,7 @@
 [![python docstring coverage](./images/interrogate_badge.svg)](https://interrogate.readthedocs.io/en/latest/)
 [![python test coverage](./images/coverage.svg)](https://docs.pytest.org/en/latest/)
 
-# Seiko converter
+# Seiko Qt-2100 converter
 
 Seiko converter is a software allowing to generate graphs based on the raw data 
 produced by the Seiko Qt-2100 Timegrapher device. 
@@ -28,7 +28,10 @@ usable and printable again according to current modern standards.
 
 TBR
 
+![](./images/A10S_70s.webp)![](./images/A10S_rp.webp)![](./images/A10S.webp)
 
+*In order from left to right, Print Mode A 10S graphs in 3 eras: the 70's,
+actual concurrent project, this project*
 
 ## License; Free and Open Source
 
