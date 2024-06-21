@@ -215,6 +215,8 @@ class SeikoQT2100GraphTool:
 
         For mechanical watch; Timegrapher style plot of the accumulated rates.
 
+        There are always 50 measures per day (25 values for each tick and tock).
+
         :About error handling:
 
         In modern systems we can have the full dataset in memory at a time;
