@@ -24,6 +24,7 @@ from pathlib import Path
 from seiko_converter import __version__
 from seiko_converter.qt2100_parser import SeikoQT2100Parser
 from seiko_converter.qt2100_converter import SeikoQT2100GraphTool
+from seiko_converter import commons as cm
 
 
 def seiko_converter_entry_point(
@@ -83,7 +84,11 @@ def main():
     )
 
     parser.add_argument(
-        "-v", "--version", action="version", version="%(prog)s " + __version__
+        "--version", action="version", version="%(prog)s " + __version__
+    )
+
+    parser.add_argument(
+        "-v", "--verbose", action="store_true",
     )
 
     # Get program args and launch associated command
@@ -94,6 +99,9 @@ def main():
     assert params[
         "input_file"
     ].exists(), f"Input file <{params['input_file']}> not found!"
+
+    if params["verbose"]:
+        cm.log_level("debug")
 
     # Do magic
     seiko_converter_entry_point(**params)
