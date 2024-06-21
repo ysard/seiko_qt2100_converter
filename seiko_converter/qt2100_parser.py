@@ -201,17 +201,17 @@ class SeikoQT2100Parser:
                     continue
 
                 # Remove the sign flag, and get the gat mode in use
-                gate_mode = byte3 & ~1
-                print("gate mode (raw)", gate_mode, ": ", end="")
-                if gate_mode == 0:
+                acquisition_mode = byte3 & ~1
+                print("gate mode (raw)", acquisition_mode, ": ", end="")
+                if acquisition_mode == 0:
                     print("seconds")
-                elif gate_mode & 32 == 32:  # 0x20
+                elif acquisition_mode & 32 == 32:  # 0x20
                     print("Hz")
                 else:
                     print("ukn error ??")
                     raise Exception
 
-                if gate_mode & 16 == 16:  # 0x10 flag, in 0x30 with 0x20 gate mode
+                if acquisition_mode & 16 == 16:  # 0x10 flag, in 0x30 with 0x20 gate mode
                     print("1st val of Hz mode ?")
 
                 data = read_from_buffer(3)
