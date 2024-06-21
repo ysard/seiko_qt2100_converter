@@ -26,6 +26,9 @@ import matplotlib.pyplot as plt
 from numpy import cumsum
 
 from seiko_converter.qt2100_parser import SeikoQT2100Parser
+import seiko_converter.commons as cm
+
+LOGGER = cm.logger()
 
 
 class SeikoQT2100GraphTool:
@@ -165,7 +168,8 @@ class SeikoQT2100GraphTool:
         serie = pd.DataFrame(
             {"xticks": list(range(len(formatted_values))), "values": formatted_values}
         )
-        print(serie.describe())
+        LOGGER.info(serie.describe())
+
         ax = serie.plot.line(style="-", y="values")
         serie.plot.scatter(
             x="xticks",
@@ -287,7 +291,7 @@ class SeikoQT2100GraphTool:
         ticks_mean = stat.mean(val for val in ticks if val)
         tocks_mean = stat.mean(val for val in tocks if val)
 
-        print(ticks_mean, tocks_mean)
+        LOGGER.debug("Calculated averages, ticks: %s, tocks: %s", ticks_mean, tocks_mean)
         beat_error = ticks_mean + tocks_mean
         print("beat error", beat_error)
 
@@ -326,7 +330,7 @@ class SeikoQT2100GraphTool:
         df = pd.DataFrame(
             zip(xticks, cumulated_values), columns=["xticks", "cum_values"]
         )
-        print(df.describe())
+        LOGGER.info(df.describe())
 
         # Display data
         ax = df.plot.scatter(
