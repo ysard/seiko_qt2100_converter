@@ -21,6 +21,7 @@
 from pathlib import Path
 import csv
 import statistics as stat
+from functools import partial
 
 # Custom imports
 import pandas as pd
@@ -141,13 +142,15 @@ class SeikoQT2100GraphTool:
                 "For this mode, you should use to_csv() method instead"
             )
 
-    def build_graph_mode_b(self, output_filename=None, debug=False, **kwargs):
+    def build_graph_mode_b(self, output_filename=None, vertical=True, debug=False, **kwargs):
         """Build graph for data generated in print mode B 1S
 
         For Quartz watch (LCD or stepper).
         No accumulated values: just 1 "vertical" line for sec/day rate.
 
-        :param output_filename: Output filepath for the pdf file.
+        :key output_filename: Output filepath for the pdf file.
+        :key vertical: Build a vertical graph that expands downwards, instead of
+            a horizontal graph that expands to the right.
         :key debug: (Optional) Show the graph in matplotlib window. (default: False)
         :type output_filename: str
         :type debug: bool
@@ -176,37 +179,65 @@ class SeikoQT2100GraphTool:
         )
         LOGGER.info(serie["values"].describe())
 
-        ax = serie.plot.line(style="-", y="values")
-        serie.plot.scatter(
-            x="xticks",
-            y="values",
-            title=f"Mode {self.print_mode} - {self.rate_mode.title()}",
+        # Plot (swap axis for vertical graph)
+        if vertical:
+            ax = serie.plot.line(style="-", x="values")
+            scatter_plot_func = partial(serie.plot.scatter, x="values", y="xticks")
+            legend = "⊖↙ ↘⊕"
+        else:
+            ax = serie.plot.line(style="-", y="values")
+            scatter_plot_func = partial(serie.plot.scatter, x="xticks", y="values")
+            legend = "↗+ ↘-"
+
+        scatter_plot_func(
+            title=f"Mode {self.print_mode} - {self.rate_mode.title()} - {legend}",
             c=colors,
             zorder=2,
             ax=ax,
         )
 
         # Improve lisibility
-        ax.set_xlabel("")
-        ax.set_ylabel("Daily Rate (Sec/Day)")
-        ax.legend().set_visible(False)  # on supprime la légende
+        # Legend
+        if vertical:
+            ax.set_xlabel("Daily Rate (Sec/Day)")
+            ax.set_ylabel("")
+        else:
+            ax.set_xlabel("")
+            ax.set_ylabel("Daily Rate (Sec/Day)")
+        ax.legend().set_visible(False)  # 1 serie of data: delete legend
 
         # Width of x-axis muts be at least 1 day
-        y_max = y if (y := max(formatted_values)) > 1.0 else 1.0
-        y_min = y if (y := min(formatted_values)) < -1.0 else -1.0
-        ax.set_ylim(y_min, y_max)
+        axis_max = max_val if (max_val := max(formatted_values)) > 1.0 else 1.0
+        axis_min = min_val if (min_val := min(formatted_values)) < -1.0 else -1.0
+        axis_lim_func = ax.set_xlim if vertical else ax.set_ylim
+        axis_lim_func(axis_min, axis_max)
 
+        # Ticks & grid
         plt.minorticks_on()
-        plt.tick_params(
-            axis="x",  # changes apply to the x-axis
-            which="both",  # both major and minor ticks are affected
-            bottom=False,  # ticks along the bottom edge are off
-            top=False,  # ticks along the top edge are off
-            labelbottom=False,  # labels along the bottom edge are off
-        )
+        if vertical:
+            # Remove ticks info on y-axis, grid must be on x-axis only
+            axis_grid_func = ax.xaxis.grid
+            ax.invert_yaxis()  # The graph expands downwards
+            plt.tick_params(
+                axis="y",  # changes apply to the x-axis
+                which="both",  # both major and minor ticks are affected
+                left=False,  # ticks along the bottom edge are off
+                right=False,  # ticks along the top edge are off
+                labelleft=False,  # labels along the bottom edge are off
+            )
+        else:
+            # Remove ticks info on x-axis, grid must be on y-axis only
+            axis_grid_func = ax.yaxis.grid
+            plt.tick_params(
+                axis="x",  # changes apply to the x-axis
+                which="both",  # both major and minor ticks are affected
+                bottom=False,  # ticks along the bottom edge are off
+                top=False,  # ticks along the top edge are off
+                labelbottom=False,  # labels along the bottom edge are off
+            )
 
-        ax.yaxis.grid(True, which="minor", linestyle=":")
-        ax.yaxis.grid(True, which="major", linestyle="-")
+        axis_grid_func(True, which="minor", linestyle=":")
+        axis_grid_func(True, which="major", linestyle="-")
 
         # Export the graph
         fig = ax.get_figure()
