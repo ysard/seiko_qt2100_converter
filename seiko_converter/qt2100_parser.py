@@ -19,6 +19,10 @@
 from pathlib import Path
 from struct import unpack
 from binascii import hexlify
+# Custom imports
+from seiko_converter import commons as cm
+
+LOGGER = cm.logger()
 
 
 class SeikoQT2100Parser:
@@ -130,7 +134,7 @@ class SeikoQT2100Parser:
                 databytes = bytearray([next(it_raw_data) for _ in range(length)])
                 return databytes
             except StopIteration:
-                print("Partial data => reject")
+                LOGGER.warning("Parsing end: Partial data => reject")
                 return
 
         for databyte in it_raw_data:
@@ -140,22 +144,22 @@ class SeikoQT2100Parser:
 
             # Extract the header; ESC 0
             if escmode and databyte == ord("0"):
-                print("SEIKO header probe")
+                LOGGER.debug("SEIKO header probe")
                 data = read_from_buffer(1)
                 if data is None:
                     break
                 self.rate_mode = data[0]
-                print("rate:", self.get_rate_mode())
+                LOGGER.debug("Rate mode found: %s", self.get_rate_mode())
 
             # Begin to extract values only; ESC 1
             if escmode and databyte == ord("1"):
-                print("PROBE ESC 1 found")
+                LOGGER.debug("PROBE ESC 1 found")
                 seiko_mode = True
                 continue
 
             # Begin to extract timestamps + values; ESC T
             if escmode and databyte == ord("T"):
-                print("Timestamp found")
+                LOGGER.debug("Timestamp found")
                 timestamp_mode = True
 
                 # Consume the timestamp + the ESC 1 header that follows
@@ -169,7 +173,7 @@ class SeikoQT2100Parser:
                 hours, minutes, seconds, esc1_header = data
                 assert esc1_header == 0x1B31
 
-                print("> timestamp: ", hours, minutes, seconds)
+                LOGGER.debug("> timestamp: %s:%s:%s", hours, minutes, seconds)
                 self.parsed_timestamps.append(
                     ":".join(map(lambda val: format(val, "#02"), (minutes, seconds)))
                 )
@@ -180,7 +184,7 @@ class SeikoQT2100Parser:
                 print_mode = databyte
                 assert print_mode in (0, 1, 2, 3), f"Unknown mode {print_mode}"
                 self.print_mode = print_mode
-                print("Reading", self.get_print_mode())
+                LOGGER.debug("Print mode found: %s", self.get_print_mode())
 
                 data = read_from_buffer(2)
                 if data is None:
@@ -194,7 +198,7 @@ class SeikoQT2100Parser:
 
                 if byte3 & 128 == 128:  # 0x80
                     sign_chr = "+" if sign else "-"
-                    print("Scale ERROR", sign_chr)
+                    LOGGER.debug("Scale ERROR %s", sign_chr)
                     # => no value, Skip value
                     # self.parsed_values.append(f"{sign_chr} OUT OF RANGE")
                     self.parsed_values.append(None)
@@ -202,13 +206,12 @@ class SeikoQT2100Parser:
 
                 # Remove the sign flag, and get the gat mode in use
                 acquisition_mode = byte3 & ~1
-                print("gate mode (raw)", acquisition_mode, ": ", end="")
                 if acquisition_mode == 0:
-                    print("seconds")
+                    LOGGER.debug("Acquisition mode: Seconds; %d", acquisition_mode)
                 elif acquisition_mode & 32 == 32:  # 0x20
-                    print("Hz")
+                    LOGGER.debug("Acquisition mode: Hz; %d", acquisition_mode)
                 else:
-                    print("ukn error ??")
+                    LOGGER.error("Acquisition mode: Unknwon; %d", acquisition_mode)
                     raise Exception
 
                 if acquisition_mode & 16 == 16:  # 0x10 flag, in 0x30 with 0x20 gate mode
@@ -220,7 +223,7 @@ class SeikoQT2100Parser:
 
                 # Extract values: val1, val2, val3
                 measure = int(hexlify(data)) / 1000 * sign
-                print(">", measure)
+                LOGGER.debug("> %s", measure)
 
                 self.parsed_values.append(measure)
 
@@ -228,7 +231,7 @@ class SeikoQT2100Parser:
             seiko_mode = False
             timestamp_mode = False
 
-        print(f"Parsed {len(self.parsed_values)} values")
+        LOGGER.info("Parsed %s values", len(self.parsed_values))
 
     def get_rate_mode(self):
         """Get the current rate mode of the file (human-readable form)
