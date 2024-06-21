@@ -10,6 +10,19 @@ run:
 clean:
 	@rm *.csv *.pdf
 
+# Tests
+tests:
+	pytest tests
+
+coverage:
+	pytest --cov=seiko_converter --cov-report term-missing -vv
+	@-coverage-badge -f -o images/coverage.svg
+
+docstring_coverage:
+	interrogate -v seiko_converter/ \
+	    -e seiko_converter/__init__.py \
+	    --badge-style flat --generate-badge images/
+
 # development & release cycle
 fullrelease:
 	fullrelease
