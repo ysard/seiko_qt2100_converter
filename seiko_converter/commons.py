@@ -18,6 +18,7 @@
 """Logger settings and project constants"""
 
 # Standard imports
+from logging.handlers import RotatingFileHandler
 import logging
 
 
@@ -33,6 +34,8 @@ LOG_LEVELS = {
 }
 
 ################################################################################
+_logger = logging.getLogger(LOGGER_NAME)
+_logger.setLevel(LOG_LEVEL)
 
 
 def logger(name=LOGGER_NAME):
@@ -44,10 +47,6 @@ def logger(name=LOGGER_NAME):
     fmt_str = "%(levelname)s: [%(filename)s:%(lineno)s:%(funcName)s()] %(message)s"
     logging.basicConfig(format=fmt_str)
     return logger_obj
-
-
-_logger = logging.getLogger(LOGGER_NAME)
-_logger.setLevel(LOG_LEVEL)
 
 
 def log_level(level):
