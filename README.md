@@ -26,12 +26,32 @@ usable and printable again according to current modern standards.
 
 ## Features
 
-TBR
-
 ![](./images/A10S_70s.webp)![](./images/A10S_rp.webp)![](./images/A10S.webp)
 
 *In order from left to right, Print Mode A 10S graphs in 3 eras: the 70's,
 actual concurrent project, this project*
+
+### Error corrections
+
+As shown in the image above, dots resulting from measurement error on the
+device's side are corrected using the most neutral value possible
+(the average of the tick or tock values) and clearly displayed on the figure (red dot).
+
+### Horizontal or vertical layout
+
+Horizontal layout is closer to the rendering of modern timegraphers,
+but the readability of an ever-expanding downward graph can be easier.
+
+### Optional cutoff
+
+Data can be added indefinitely to such a graph. Controlling value overflow for
+long data series is important.
+A cutoff value can be chosen automatically on the basis of the data or
+specified by the user.
+
+### CSV Export
+
+For further analysis.
 
 ## Usage
 
