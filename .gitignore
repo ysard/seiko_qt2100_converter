@@ -45,3 +45,14 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+
+# Debian packaging
+debian/libre-printer-*/
+debian/libre-printer/
+debian/files
+debian/*.debhelper*
+debian/*.substvars
+debian/debhelper-build-stamp
+obj-*/
+.pc
+.pybuild/
