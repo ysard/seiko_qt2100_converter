@@ -229,7 +229,7 @@ class SeikoQT2100Parser:
                     LOGGER.debug(
                         "Acquisition mode: %s; %d",
                         self.ACQUISITION_MODES[self.acquisition_mode],
-                        self.acquisition_mode
+                        self.acquisition_mode,
                     )
                 else:
                     LOGGER.error("Acquisition mode: Unknwon; %d", self.acquisition_mode)

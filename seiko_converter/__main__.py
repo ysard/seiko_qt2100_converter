@@ -107,7 +107,8 @@ def main():
     graph_group.add_argument(
         "-c",
         "--cutoff",
-        help="""Allow wrapped display to limit infinite graph expansion on
+        help="""Only for Mode A graphs.
+            Allow wrapped display to limit infinite graph expansion on
             the right direction (x-axis).
             If set on vertical graph: rate values will be cut;
             if set on horizontal graph: days will be cut.

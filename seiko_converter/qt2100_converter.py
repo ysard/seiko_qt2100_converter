@@ -143,7 +143,9 @@ class SeikoQT2100GraphTool:
                 "For this mode, you should use to_csv() method instead"
             )
 
-    def build_graph_mode_b(self, output_filename=None, vertical=True, debug=False, **kwargs):
+    def build_graph_mode_b(
+        self, output_filename=None, vertical=True, debug=False, **kwargs
+    ):
         """Build graph for data generated in print mode B 1S
 
         For Quartz watch (LCD or stepper).
@@ -179,7 +181,10 @@ class SeikoQT2100GraphTool:
         ]
 
         serie = pd.DataFrame(
-            {"axisticks": list(range(len(formatted_values))), "values": formatted_values}
+            {
+                "axisticks": list(range(len(formatted_values))),
+                "values": formatted_values,
+            }
         )
         LOGGER.info(serie["values"].describe())
 
@@ -270,7 +275,9 @@ class SeikoQT2100GraphTool:
             temp_values.append(val)
         return temp_values
 
-    def build_graph_mode_a(self, output_filename=None, vertical=True, cutoff=True, debug=False, **kwargs):
+    def build_graph_mode_a(
+        self, output_filename=None, vertical=True, cutoff=True, debug=False, **kwargs
+    ):
         """Build graph for data generated in print mode A 1S/2M
 
         For mechanical watch; Timegrapher style plot of the accumulated rates.
@@ -297,7 +304,7 @@ class SeikoQT2100GraphTool:
             (default: True)
         :key cutoff: Allow wrapped display to limit infinite graph expansion on
             the right direction (x-axis).
-            If set on vertical graph: values will be cut;
+            If set on vertical graph: rate values will be cut;
             if set on horizontal graph: days will be cut.
 
             Set it to True for auto-cut (2 days in horizontal mode),
@@ -410,7 +417,7 @@ class SeikoQT2100GraphTool:
             # Vertical mode: cutoff is made on data
             if not isinstance(cutoff, bool):
                 # Use the given value no matter what
-                cut_val=float(cutoff)
+                cut_val = float(cutoff)
             elif cutoff:
                 # Take the 1st value, that can be positive or negative; it gives
                 # a good info about the dataset shape (big or small values for high
@@ -487,7 +494,6 @@ class SeikoQT2100GraphTool:
             plt.show()
 
         self.save_fig(fig, output_filename)
-
 
     def save_fig(self, fig, output_filename):
         """Export the graph
