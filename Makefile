@@ -54,3 +54,9 @@ check_code:
 archive:
 	# Create upstream src archive
 	git archive HEAD --prefix='seiko-converter-$(PROJECT_VERSION).orig/' | gzip > ../seiko-converter-$(PROJECT_VERSION).orig.tar.gz
+
+debianize: archive
+	dpkg-buildpackage -us -uc -b -d
+
+debcheck:
+	lintian -EvIL +pedantic ../seiko-converter_*.deb
