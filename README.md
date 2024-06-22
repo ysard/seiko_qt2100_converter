@@ -33,6 +33,35 @@ TBR
 *In order from left to right, Print Mode A 10S graphs in 3 eras: the 70's,
 actual concurrent project, this project*
 
+## Usage
+
+```
+$ python -m seiko_converter -h
+usage: __main__.py [-h] -i INPUT_FILE [-o [OUTPUT_FILENAME]] [--csv] [-g] [--horizontal] [--vertical] [-c [CUTOFF]] [-d] [--version] [-v]
+
+options:
+  -h, --help            show this help message and exit
+  -i INPUT_FILE, --input_file INPUT_FILE
+                        Raw file from device. (default: None)
+  -o [OUTPUT_FILENAME], --output_filename [OUTPUT_FILENAME]
+                        Generated file name. (default: None)
+  --csv                 Extract the parsed values into a CSV file. (default: False)
+  -g, --graph           Extract the parsed values into a timegrapher style file. (default: False)
+  -d, --debug           Show the matplotlib windows. (default: False)
+  --version             show program's version number and exit
+  -v, --verbose
+
+Graph options:
+  --horizontal          Make a horizontal graph that expand downwards; default is vertical.
+  --vertical            Make a vertical graph that expand downwards (default).
+  -c [CUTOFF], --cutoff [CUTOFF]
+                        Only for Mode A graphs. Allow wrapped display to limit infinite graph expansion on the right
+                        direction (x-axis). If set on vertical graph: rate values will be cut; if set on horizontal graph:
+                        days will be cut. Set it to True for auto-cut (2 days in horizontal mode), False for disabling the
+                        feature, or with a custom value adapted to the chosen mode (limit value or time limit in days).
+                        (default: True)
+```
+
 ## License; Free and Open Source
 
 Seiko converter is released under the AGPL (Affero General Public License).
