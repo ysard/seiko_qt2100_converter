@@ -44,6 +44,10 @@ but the readability of an ever-expanding downward graph can be easier.
 
 ![](./images/horizontal.webp)
 
+```commandline
+$ python -m seiko_converter -i data/seiko_qt2100_A10S.raw -g --horizontal
+```
+
 ### Optional cutoff
 
 Data can be added indefinitely to such a graph. Controlling value overflow for
@@ -53,13 +57,18 @@ specified by the user.
 
 ![](./images/vertical_cutoff.webp)![](./images/vertical_cutoff_10.webp)
 
+```commandline
+$ python -m seiko_converter -i data/seiko_qt2100_A10S.raw -g --vertical -c
+$ python -m seiko_converter -i data/seiko_qt2100_A10S.raw -g --vertical -c 10
+```
+
 ### CSV Export
 
 For further analysis.
 
 ## Usage
 
-```
+```commandline
 $ python -m seiko_converter -h
 usage: __main__.py [-h] -i INPUT_FILE [-o [OUTPUT_FILENAME]] [--csv] [-g] [--horizontal] [--vertical] [-c [CUTOFF]] [-d] [--version] [-v]
 
