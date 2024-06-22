@@ -42,12 +42,16 @@ device's side are corrected using the most neutral value possible
 Horizontal layout is closer to the rendering of modern timegraphers,
 but the readability of an ever-expanding downward graph can be easier.
 
+![](./images/horizontal.webp)
+
 ### Optional cutoff
 
 Data can be added indefinitely to such a graph. Controlling value overflow for
 long data series is important.
 A cutoff value can be chosen automatically on the basis of the data or
 specified by the user.
+
+![](./images/vertical_cutoff.webp)![](./images/vertical_cutoff_10.webp)
 
 ### CSV Export
 
