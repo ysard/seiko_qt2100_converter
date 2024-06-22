@@ -375,14 +375,6 @@ class SeikoQT2100GraphTool:
         formatted_values = []
         erroneous_indexes = []
         for index, val in enumerate(self.parsed_values):
-            # Replace by previous tic or tac
-            # if not isinstance(val, (int, float)):
-            #     if index - 2 < 0:
-            #         formatted_values = []
-            #         continue
-            #     formatted_values.append(formatted_values[index -2])
-            #     continue
-
             # Replace erroneous measure by tick or tock respective average
             if val is None:
                 formatted_values.append(ticks_mean if index % 2 == 0 else tocks_mean)
