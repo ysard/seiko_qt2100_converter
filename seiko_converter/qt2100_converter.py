@@ -251,7 +251,26 @@ class SeikoQT2100GraphTool:
         fig = ax.get_figure()
         self.save_fig(fig, output_filename)
 
-    def build_graph_mode_a(self, output_filename=None, debug=False, **kwargs):
+    def build_wrapped_dataset(self, values, cut_val):
+        temp_values = list()
+        for val in values:
+            abs_val = abs(val)
+            if abs_val > cut_val:
+                sign = 1 if val > 0 else -1
+                dividend = abs_val // cut_val
+                val = abs_val % cut_val
+                if sign > 0:
+                    # val += min(values) + (dividend - 1) * cut_val
+                    val += -cut_val + (dividend - 1) * cut_val
+                    val *= sign
+                else:
+                    val *= -1
+                    # val += max(values) - (dividend - 1) * cut_val
+                    val += cut_val - (dividend - 1) * cut_val
+            temp_values.append(val)
+        return temp_values
+
+    def build_graph_mode_a(self, output_filename=None, vertical=True, cutoff=True, debug=False, **kwargs):
         """Build graph for data generated in print mode A 1S/2M
 
         For mechanical watch; Timegrapher style plot of the accumulated rates.
@@ -270,7 +289,24 @@ class SeikoQT2100GraphTool:
         :key output_filename: Output filepath for the graph file
             (By default it will be a pdf based on the input filename,
             but that can be changed by specifying another extension). (default: None)
+        :key vertical: If True a vertical graph will be made. The graph will
+            always expand downwards. This representation is similar to the one used
+            for the QT-2100 device.
+            Otherwise, the graph will expand on the right direction. This is
+            a representation used on modern timegraphers.
+            (default: True)
+        :key cutoff: Allow wrapped display to limit infinite graph expansion on
+            the right direction (x-axis).
+            If set on vertical graph: values will be cut;
+            if set on horizontal graph: days will be cut.
+
+            Set it to True for auto-cut (2 days in horizontal mode),
+            False for disabling the feature, or with a custom value adapted to
+            the chosen mode (limit value or time limit in days).
+            (default: True)
         :key debug: (Optional) Show the graph in matplotlib window. (default: False)
+        :type vertical: bool
+        :type cutoff: bool | int | float
         :type output_filename: str
         :type debug: bool
         """
@@ -364,42 +400,93 @@ class SeikoQT2100GraphTool:
         # Build values that will be displayed
         cumulated_values = cumsum(formatted_values)
 
-        # Max x-axis duration: the remaining values restart at x-axis 0 (wrap values)
-        g = generate_ticks(days_duration=2)
-        xticks = [round(next(g), 2) for _ in range(len(formatted_values))]
+        # Simulate opposite rate
+        # cumulated_values = [-1 * val for val in cumulated_values]
+
+        # Max x-axis: the remaining values restart at x-axis 0 (wrap values)
+        if not vertical and cutoff is True:
+            # Horizontal mode, auto cutoff asked: 2 days
+            cutoff = 2
+        # Cut data only on vertical mode, on days otherwise
+        days_duration = None if vertical else cutoff
+        g = generate_ticks(days_duration=days_duration)
+        dayticks = [round(next(g), 2) for _ in range(len(formatted_values))]
+
+        if vertical:
+            # Vertical mode: cutoff is made on data
+            if not isinstance(cutoff, bool):
+                # Use the given value no matter what
+                cut_val=float(cutoff)
+            elif cutoff:
+                # Take the 1st value, that can be positive or negative; it gives
+                # a good info about the dataset shape (big or small values for high
+                # or small rates)
+                cut_val = ceil(abs(cumulated_values[0]))
+
+            if cutoff:
+                # Cutoff behavior is set: wrap the dataset
+                cumulated_values = self.build_wrapped_dataset(cumulated_values, cut_val)
 
         df = pd.DataFrame(
-            zip(xticks, cumulated_values), columns=["xticks", "cum_values"]
+            zip(dayticks, cumulated_values), columns=["dayticks", "cum_values"]
         )
         LOGGER.info(df["cum_values"].describe())
 
-        # Display data
-        ax = df.plot.scatter(
-            x="xticks",
-            y="cum_values",
-            title=f"Mode {self.print_mode} - {self.rate_mode.title()}",
+        # Plot (swap axis for vertical graph)
+        if vertical:
+            scatter_plot_func = partial(df.plot.scatter, x="cum_values", y="dayticks")
+        else:
+            scatter_plot_func = partial(df.plot.scatter, x="dayticks", y="cum_values")
+
+        ax = scatter_plot_func(
+            title=f"Mode {self.print_mode}",  # - {self.rate_mode.title()}",
             c=colors,
-            zorder=2,
+            zorder=2,  # Grid under the data
         )
 
         # Improve lisibility
-        ax.set_xlabel("Days")
-        ax.set_ylabel("Cumulated seconds")
-
         # Show full grid
         ax.xaxis.grid(True, which="minor", linestyle=":")
         ax.xaxis.grid(True, which="major", linestyle="-")
         ax.yaxis.grid(True, which="minor", linestyle=":")
         ax.yaxis.grid(True, which="major", linestyle="-")
 
-        # Width of x-axis muts be at least 1 day
-        x_max = x if (x := max(xticks)) > 1.0 else 1.0
-        ax.set_xlim(0, x_max)
         plt.minorticks_on()
         fig = ax.get_figure()
 
-        # ax.invert_xaxis()
-        # ax.invert_yaxis()
+        if vertical:
+            # ax.invert_xaxis()  # Similar to seiko QT-2100 but less clear (?)
+            ax.invert_yaxis()
+
+            # Legend
+            ax.set_xlabel("Cumulated seconds")
+            ax.set_ylabel("Days")
+
+            # x-axis limits
+            if not isinstance(cutoff, bool):
+                lim = ceil(cut_val)
+                ax.set_xlim(-lim, lim)
+
+            # Reshape the graph (taller than wide), depending on days
+            fig.set_figheight(4.2 * len(cumulated_values) // MEASURES_PER_DAY)
+
+            current_ticks_values = ax.get_xticks()
+        else:
+            # Legend
+            ax.set_xlabel("Days")
+            ax.set_ylabel("Cumulated seconds")
+
+            # Width of x-axis muts be at least 1 day
+            if max(dayticks) < 1.0:
+                ax.set_xlim(xmax=1.0)
+
+            current_ticks_values = ax.get_yticks()
+
+        # Search the current rate given by the difference between 2 major ticks
+        # and show it in title
+        current_rate = current_ticks_values[-1] - current_ticks_values[-2]
+        unit = "Secs" if current_rate > 1 else "Sec"
+        ax.set_title(ax.get_title() + f" - {current_rate} {unit}/Day")
 
         # Export the graph
         if debug:
