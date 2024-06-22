@@ -256,7 +256,16 @@ class SeikoQT2100GraphTool:
         fig = ax.get_figure()
         self.save_fig(fig, output_filename)
 
-    def build_wrapped_dataset(self, values, cut_val):
+    @staticmethod
+    def build_wrapped_dataset(values, cut_val):
+        """Build wrapped values according the given cutoff value
+
+        The aim is to reposition all data above a certain value on the right-hand
+        side of the graph to the left-hand side of the graph until it reaches
+        the right-hand edge again, and so on.
+
+        We handle negative & positive slopes.
+        """
         temp_values = list()
         for val in values:
             abs_val = abs(val)
