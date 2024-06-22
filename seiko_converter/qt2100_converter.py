@@ -196,7 +196,7 @@ class SeikoQT2100GraphTool:
         else:
             ax = serie.plot.line(style="-", y="values")
             scatter_plot_func = partial(serie.plot.scatter, x="axisticks", y="values")
-            legend = "↗+ ↘-"
+            legend = "↗⊕ ↘⊖"
 
         scatter_plot_func(
             title=f"Mode {self.print_mode} - {self.rate_mode.title()} - {legend}",
@@ -471,6 +471,7 @@ class SeikoQT2100GraphTool:
             # Legend
             ax.set_xlabel("Cumulated seconds")
             ax.set_ylabel("Days")
+            legend = "⊖↙ ↘⊕"
 
             # x-axis limits
             if not isinstance(cutoff, bool):
@@ -485,6 +486,7 @@ class SeikoQT2100GraphTool:
             # Legend
             ax.set_xlabel("Days")
             ax.set_ylabel("Cumulated seconds")
+            legend = "↗⊕ ↘⊖"
 
             # Width of x-axis muts be at least 1 day
             if max(dayticks) < 1.0:
@@ -496,7 +498,7 @@ class SeikoQT2100GraphTool:
         # and show it in title
         current_rate = current_ticks_values[-1] - current_ticks_values[-2]
         unit = "Secs" if current_rate > 1 else "Sec"
-        ax.set_title(ax.get_title() + f" - {current_rate} {unit}/Day")
+        ax.set_title(ax.get_title() + f" - {current_rate} {unit}/Day - {legend}")
 
         # Export the graph
         if debug:
