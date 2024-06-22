@@ -148,11 +148,14 @@ class SeikoQT2100GraphTool:
         For Quartz watch (LCD or stepper).
         No accumulated values: just 1 "vertical" line for sec/day rate.
 
-        :key output_filename: Output filepath for the pdf file.
+        :key output_filename: Output filepath for the graph file
+            (By default it will be a pdf based on the input filename,
+            but that can be changed by specifying another extension). (default: None)
         :key vertical: Build a vertical graph that expands downwards, instead of
             a horizontal graph that expands to the right.
         :key debug: (Optional) Show the graph in matplotlib window. (default: False)
         :type output_filename: str
+        :type vertical: bool
         :type debug: bool
         """
         # Handle erronerous values during measurement
@@ -175,18 +178,18 @@ class SeikoQT2100GraphTool:
         ]
 
         serie = pd.DataFrame(
-            {"xticks": list(range(len(formatted_values))), "values": formatted_values}
+            {"axisticks": list(range(len(formatted_values))), "values": formatted_values}
         )
         LOGGER.info(serie["values"].describe())
 
         # Plot (swap axis for vertical graph)
         if vertical:
             ax = serie.plot.line(style="-", x="values")
-            scatter_plot_func = partial(serie.plot.scatter, x="values", y="xticks")
+            scatter_plot_func = partial(serie.plot.scatter, x="values", y="axisticks")
             legend = "⊖↙ ↘⊕"
         else:
             ax = serie.plot.line(style="-", y="values")
-            scatter_plot_func = partial(serie.plot.scatter, x="xticks", y="values")
+            scatter_plot_func = partial(serie.plot.scatter, x="axisticks", y="values")
             legend = "↗+ ↘-"
 
         scatter_plot_func(
@@ -207,8 +210,8 @@ class SeikoQT2100GraphTool:
         ax.legend().set_visible(False)  # 1 serie of data: delete legend
 
         # Width of x-axis muts be at least 1 day
-        axis_max = max_val if (max_val := max(formatted_values)) > 1.0 else 1.0
-        axis_min = min_val if (min_val := min(formatted_values)) < -1.0 else -1.0
+        axis_max = max_val if (max_val := ceil(max(formatted_values))) > 1.0 else 1.0
+        axis_min = min_val if (min_val := floor(min(formatted_values))) < -1.0 else -1.0
         axis_lim_func = ax.set_xlim if vertical else ax.set_ylim
         axis_lim_func(axis_min, axis_max)
 
