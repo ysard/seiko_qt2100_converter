@@ -244,16 +244,12 @@ class SeikoQT2100GraphTool:
         axis_grid_func(True, which="major", linestyle="-")
 
         # Export the graph
-        fig = ax.get_figure()
-        filename = output_filename or self.get_output_filename(".pdf")
-        fig.savefig(filename)
-
         if debug:
             plt.show()
 
-        # Close previous fig (free memory)
-        plt.close(fig)
-        assert not plt.get_fignums()
+        # Export the graph
+        fig = ax.get_figure()
+        self.save_fig(fig, output_filename)
 
     def build_graph_mode_a(self, output_filename=None, debug=False, **kwargs):
         """Build graph for data generated in print mode A 1S/2M
@@ -400,18 +396,35 @@ class SeikoQT2100GraphTool:
         x_max = x if (x := max(xticks)) > 1.0 else 1.0
         ax.set_xlim(0, x_max)
         plt.minorticks_on()
+        fig = ax.get_figure()
 
         # ax.invert_xaxis()
         # ax.invert_yaxis()
 
         # Export the graph
-        fig = ax.get_figure()
-        filename = output_filename or self.get_output_filename(".pdf")
-        fig.savefig(filename)
-
         if debug:
             plt.show()
 
-        # Close previous fig (free memory)
+        self.save_fig(fig, output_filename)
+
+
+    def save_fig(self, fig, output_filename):
+        """Export the graph
+
+        :param fig: Matplotlib figure
+        :param output_filename: If None, the name will be based on the original
+            one and a pdf will be generated.
+        :type fig: matplotlib.figure.Figure
+        :type output_filename: None or str
+        """
+        filename = output_filename or self.get_output_filename(".pdf")
+        fig.savefig(filename)
+
+        # Last reshape
+        plt.tight_layout()
+
+        # Close the fig (free memory)
         plt.close(fig)
-        assert not plt.get_fignums()
+        # WARNING: When the fig is plotted (debug mode), tight_layout() call is
+        # not compatible with close()... An exception will be raised
+        assert not plt.get_fignums(), plt.get_fignums()
