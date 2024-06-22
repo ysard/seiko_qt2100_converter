@@ -95,8 +95,8 @@ class SeikoQT2100Parser:
         self.raw_filename = raw_filename
         self.raw_data = Path(self.raw_filename).read_bytes()
 
-        self.parsed_values = list()
-        self.parsed_timestamps = list()
+        self.parsed_values = []
+        self.parsed_timestamps = []
         self.print_mode = None
         self.rate_mode = None
         self.acquisition_mode = None
@@ -153,7 +153,6 @@ class SeikoQT2100Parser:
                 return databytes
             except StopIteration:
                 LOGGER.warning("Parsing end: Partial data => reject")
-                return
 
         for databyte in it_raw_data:
             if databyte == 0x1B:
@@ -233,12 +232,11 @@ class SeikoQT2100Parser:
                     )
                 else:
                     LOGGER.error("Acquisition mode: Unknwon; %d", self.acquisition_mode)
-                    raise Exception
+                    raise ValueError
 
                 if byte3 & 16 == 16:
                     # 0x10 flag, in 0x30 with 0x20 acquisition mode
                     LOGGER.warning("1st val of Hz mode ?; %d", byte3 & ~1)
-
 
                 data = read_from_buffer(3)
                 if data is None:

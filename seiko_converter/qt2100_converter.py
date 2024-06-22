@@ -92,9 +92,9 @@ class SeikoQT2100GraphTool:
         See :meth:`SeikoQT2100Parser`.
         """
         # Format erroneous data
-        formatted_values = list()
+        formatted_values = []
         sign_chr = "+"
-        for index, val in enumerate(self.parsed_values):
+        for val in self.parsed_values:
             if val is None:
                 # Use the sign of the last correct value
                 val = f"{sign_chr} OUT OF RANGE"
@@ -114,7 +114,7 @@ class SeikoQT2100GraphTool:
 
         # Dump to CSV
         filename = output_filename or self.get_output_filename(".csv")
-        with open(filename, "w", newline="") as csvfile:
+        with open(filename, "w", newline="", encoding="utf8") as csvfile:
             seiko_writer = csv.writer(csvfile)
             seiko_writer.writerow(header)
             seiko_writer.writerows(rows)
@@ -266,7 +266,7 @@ class SeikoQT2100GraphTool:
 
         We handle negative & positive slopes.
         """
-        temp_values = list()
+        temp_values = []
         for val in values:
             abs_val = abs(val)
             if abs_val > cut_val:
@@ -326,7 +326,7 @@ class SeikoQT2100GraphTool:
         :type output_filename: str
         :type debug: bool
         """
-        MEASURES_PER_DAY = 50
+        measures_per_day = 50
 
         def ref_curve(rate_per_day=10):
             """Generator of values according the given rate per day
@@ -347,7 +347,7 @@ class SeikoQT2100GraphTool:
             >>> serie = pd.Series(ref_values)
             >>> serie.plot()
             """
-            offset = rate_per_day / MEASURES_PER_DAY
+            offset = rate_per_day / measures_per_day
             val = 0
             yield 0
             while True:
@@ -368,7 +368,7 @@ class SeikoQT2100GraphTool:
                 g = ref_curve(rate_per_day=1)
                 if days_duration:
                     yield from (
-                        next(g) for _ in range(int(days_duration) * MEASURES_PER_DAY)
+                        next(g) for _ in range(int(days_duration) * measures_per_day)
                     )
                 else:
                     yield from g
@@ -478,7 +478,7 @@ class SeikoQT2100GraphTool:
                 ax.set_xlim(-lim, lim)
 
             # Reshape the graph (taller than wide), depending on days
-            fig.set_figheight(4.2 * len(cumulated_values) // MEASURES_PER_DAY)
+            fig.set_figheight(4.2 * len(cumulated_values) // measures_per_day)
 
             current_ticks_values = ax.get_xticks()
         else:

@@ -28,9 +28,7 @@ from seiko_converter.qt2100_converter import SeikoQT2100GraphTool
 from seiko_converter import commons as cm
 
 
-def seiko_converter_entry_point(
-    *args, input_file=None, csv=False, graph=False, **kwargs
-):
+def seiko_converter_entry_point(input_file=None, csv=False, graph=False, **kwargs):
     """Init & call the parser & graph functions"""
     parser = SeikoQT2100Parser(input_file)
     obj = SeikoQT2100GraphTool(parser)
@@ -45,19 +43,18 @@ def args_to_params(args):
     return dict(vars(args).items())
 
 
-def str2bool(v):
+def str2bool(tristate_val):
     """Cast the given value into bool or numeric value
 
     :rtype: bool | float
     """
-    if isinstance(v, bool):
-        return v
-    if v.lower() in ("yes", "true", "t", "y", "1"):
+    if isinstance(tristate_val, bool):
+        return tristate_val
+    if tristate_val.lower() in ("yes", "true", "t", "y", "1"):
         return True
-    elif v.lower() in ("no", "false", "f", "n", "0"):
+    if tristate_val.lower() in ("no", "false", "f", "n", "0"):
         return False
-    else:
-        return float(v)
+    return float(tristate_val)
 
 
 def main():
