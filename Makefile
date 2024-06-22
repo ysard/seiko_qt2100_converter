@@ -8,6 +8,7 @@ run:
 	#python -m seiko_converter -i "./test_data/seiko_qt2100_999999.raw" -g --csv -d
 
 clean:
+	@-rm -rf seiko_converter.egg-info/
 	@rm *.csv *.pdf
 
 # Tests
