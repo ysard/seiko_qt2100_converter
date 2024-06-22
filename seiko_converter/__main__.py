@@ -16,6 +16,7 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """Seiko converter entry point"""
+
 # Standard imports
 import argparse
 from pathlib import Path
@@ -42,6 +43,21 @@ def seiko_converter_entry_point(
 def args_to_params(args):
     """Return argparse namespace as a dict {variable name: value}"""
     return dict(vars(args).items())
+
+
+def str2bool(v):
+    """Cast the given value into bool or numeric value
+
+    :rtype: bool | float
+    """
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ("yes", "true", "t", "y", "1"):
+        return True
+    elif v.lower() in ("no", "false", "f", "n", "0"):
+        return False
+    else:
+        return float(v)
 
 
 def main():
@@ -76,6 +92,35 @@ def main():
         action="store_true",
     )
 
+    graph_group = parser.add_argument_group(title="Graph options")
+    graph_group.add_argument(
+        "--horizontal",
+        help="Make a horizontal graph that expand downwards; default is vertical.",
+        dest="vertical",
+        action="store_false",
+    )
+    graph_group.add_argument(
+        "--vertical",
+        help="Make a vertical graph that expand downwards (default).",
+        action="store_true",
+    )
+    graph_group.add_argument(
+        "-c",
+        "--cutoff",
+        help="""Allow wrapped display to limit infinite graph expansion on
+            the right direction (x-axis).
+            If set on vertical graph: rate values will be cut;
+            if set on horizontal graph: days will be cut.
+
+            Set it to True for auto-cut (2 days in horizontal mode),
+            False for disabling the feature, or with a custom value adapted to
+            the chosen mode (limit value or time limit in days).""",
+        type=str2bool,
+        nargs="?",
+        const=True,
+        default=True,
+    )
+
     parser.add_argument(
         "-d",
         "--debug",
@@ -88,7 +133,9 @@ def main():
     )
 
     parser.add_argument(
-        "-v", "--verbose", action="store_true",
+        "-v",
+        "--verbose",
+        action="store_true",
     )
 
     # Get program args and launch associated command
