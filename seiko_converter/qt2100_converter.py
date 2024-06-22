@@ -352,7 +352,7 @@ class SeikoQT2100GraphTool:
                 g = ref_curve(rate_per_day=1)
                 if days_duration:
                     yield from (
-                        next(g) for _ in range(days_duration * MEASURES_PER_DAY)
+                        next(g) for _ in range(int(days_duration) * MEASURES_PER_DAY)
                     )
                 else:
                     yield from g
