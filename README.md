@@ -31,6 +31,14 @@ usable and printable again according to current modern standards.
 *In order from left to right, Print Mode A 10S graphs in 3 eras: the 70's,
 actual concurrent project, this project*
 
+### QT-2100 modes
+
+This program automatically supports print modes A and B on the QT-2100.
+Have a look at the page in the original manual that introduces them :
+[image](./images/QT-2100P-Operating-Modes-in-Manual.jpg).
+
+The mode C is covered by the CSV output (also available on all the other modes).
+
 ### Error corrections
 
 As shown in the image above, dots resulting from measurement error on the
