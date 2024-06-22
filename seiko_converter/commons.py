@@ -24,7 +24,7 @@ import logging
 
 # Logging
 LOGGER_NAME = "seiko-converter"
-LOG_LEVEL = "DEBUG"  # TODO marche pas dans les plugins ...
+LOG_LEVEL = "INFO"
 LOG_LEVELS = {
     "debug": logging.DEBUG,
     "info": logging.INFO,
