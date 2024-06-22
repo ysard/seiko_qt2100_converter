@@ -359,7 +359,9 @@ class SeikoQT2100GraphTool:
 
         # Handle erronerous values during measurement (see docstring)
         # Simulate missing value
-        self.parsed_values[50] = None
+        # self.parsed_values[0] = None
+        # self.parsed_values[50] = None
+        # self.parsed_values[-1] = None
 
         ticks = self.parsed_values[0::2]
         tocks = self.parsed_values[1::2]
