@@ -271,7 +271,9 @@ class SeikoQT2100GraphTool:
         Not replacing them will corrupt the graph (unless the data is deleted
         in pairs.
 
-        :param output_filename: Output filepath for the pdf file.
+        :key output_filename: Output filepath for the graph file
+            (By default it will be a pdf based on the input filename,
+            but that can be changed by specifying another extension). (default: None)
         :key debug: (Optional) Show the graph in matplotlib window. (default: False)
         :type output_filename: str
         :type debug: bool
