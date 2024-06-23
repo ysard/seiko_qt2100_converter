@@ -162,7 +162,7 @@ class SeikoQT2100GraphTool:
         :type debug: bool
         """
         # Handle erronerous values during measurement
-        mean_rate = stat.mean(val for val in self.parsed_values if val)
+        mean_rate = stat.median(val for val in self.parsed_values if val)
         formatted_values = []
         erroneous_indexes = []
         for index, val in enumerate(self.parsed_values):
@@ -381,8 +381,8 @@ class SeikoQT2100GraphTool:
 
         ticks = self.parsed_values[0::2]
         tocks = self.parsed_values[1::2]
-        ticks_mean = stat.mean(val for val in ticks if val)
-        tocks_mean = stat.mean(val for val in tocks if val)
+        ticks_mean = stat.fmean(val for val in ticks if val)
+        tocks_mean = stat.fmean(val for val in tocks if val)
 
         LOGGER.debug(
             "Calculated averages, ticks: %s, tocks: %s", ticks_mean, tocks_mean
