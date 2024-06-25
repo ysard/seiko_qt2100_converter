@@ -106,6 +106,10 @@ class SeikoQT2100GraphTool:
         Timestamps are added if they are contained in the file.
         See :meth:`SeikoQT2100Parser`.
         """
+        if not self.parsed_values:
+            LOGGER.error("No data parsed, or empty file.")
+            return
+
         # Format erroneous data
         formatted_values = []
         sign_chr = "+"
@@ -149,6 +153,10 @@ class SeikoQT2100GraphTool:
             Same data used by the graphical mode B 1S.
             => not implemented, you should use :meth`to_csv` method for this one.
         """
+        if not self.parsed_values:
+            LOGGER.error("No data parsed, or empty file.")
+            return
+
         if self.print_mode in ("A 10S", "A 2M"):
             self.build_graph_mode_a(*args, **kwargs)
         elif self.print_mode == "B 1S":
@@ -176,6 +184,10 @@ class SeikoQT2100GraphTool:
         :type vertical: bool
         :type debug: bool
         """
+        if not self.parsed_values:
+            LOGGER.error("No data parsed, or empty file.")
+            return
+
         self.select_best_backend(debug)
 
         # Handle erronerous values during measurement
@@ -343,6 +355,10 @@ class SeikoQT2100GraphTool:
         :type output_filename: str
         :type debug: bool
         """
+        if not self.parsed_values:
+            LOGGER.error("No data parsed, or empty file.")
+            return
+
         self.select_best_backend(debug)
 
         measures_per_day = 50
