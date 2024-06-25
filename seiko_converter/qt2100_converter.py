@@ -27,6 +27,7 @@ from math import ceil, floor
 # Custom imports
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib import use as mplt_use
 from numpy import cumsum
 
 from seiko_converter.qt2100_parser import SeikoQT2100Parser
@@ -80,6 +81,20 @@ class SeikoQT2100GraphTool:
         """
         filename = Path(self.parser.raw_filename)
         return Path(filename.stem).with_suffix(suffix)
+
+    @staticmethod
+    def select_best_backend(debug):
+        """Ativate non interactive backend if GUI will not be used to display graphs
+
+        This will fix the thread safe (rare) issues of matplotlib.
+
+        :param debug: debug flag set to display graph in interactive GUI.
+        :type debug: bool
+        """
+        if debug:
+            return
+        # Switch to Non-interactive backend
+        mplt_use('agg')
 
     def to_csv(self, output_filename=None, **kwargs):
         """Produce a CSV file based on the parsed values
@@ -161,6 +176,8 @@ class SeikoQT2100GraphTool:
         :type vertical: bool
         :type debug: bool
         """
+        self.select_best_backend(debug)
+
         # Handle erronerous values during measurement
         mean_rate = stat.median(val for val in self.parsed_values if val)
         formatted_values = []
@@ -326,6 +343,8 @@ class SeikoQT2100GraphTool:
         :type output_filename: str
         :type debug: bool
         """
+        self.select_best_backend(debug)
+
         measures_per_day = 50
 
         def ref_curve(rate_per_day=10):
