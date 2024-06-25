@@ -531,7 +531,7 @@ class SeikoQT2100GraphTool:
 
         # Search the current rate given by the difference between 2 major ticks
         # and show it in title
-        current_rate = current_ticks_values[-1] - current_ticks_values[-2]
+        current_rate = round(current_ticks_values[-1] - current_ticks_values[-2], 2)
         unit = "Secs" if current_rate > 1 else "Sec"
         ax.set_title(ax.get_title() + f" - {current_rate} {unit}/Day - {legend}")
 
