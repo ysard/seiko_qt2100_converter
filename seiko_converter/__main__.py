@@ -111,7 +111,7 @@ def main():
             if set on horizontal graph: days will be cut.
 
             Set it to True for auto-cut (2 days in horizontal mode),
-            False for disabling the feature, or with a custom value adapted to
+            False to disable the feature, or set a custom value adapted to
             the chosen mode (limit value or time limit in days).""",
         type=str2bool,
         nargs="?",
