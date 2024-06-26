@@ -236,7 +236,7 @@ class SeikoQT2100Parser:
 
                 if byte3 & 16 == 16:
                     # 0x10 flag, in 0x30 with 0x20 acquisition mode
-                    LOGGER.warning("1st val of Hz mode ?; %d", hex(byte3 & ~1))
+                    LOGGER.warning("1st val of Hz mode ?; %s", hex(byte3 & ~1))
 
                 data = read_from_buffer(3)
                 if data is None:
