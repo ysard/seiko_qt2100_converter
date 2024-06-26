@@ -554,7 +554,7 @@ class SeikoQT2100GraphTool:
         fig.savefig(filename)
 
         # Last reshape
-        plt.tight_layout()
+        # plt.tight_layout()
 
         # Close the fig (free memory)
         plt.close(fig)
