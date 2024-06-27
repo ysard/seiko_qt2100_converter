@@ -355,8 +355,8 @@ class SeikoQT2100GraphTool:
         :type output_filename: str
         :type debug: bool
         """
-        if not self.parsed_values:
-            LOGGER.error("No data parsed, or empty file.")
+        if len(self.parsed_values) < 2:  # Need tick/tock couple for mean error correction
+            LOGGER.error("Not enough data parsed, or empty file.")
             return
 
         self.select_best_backend(debug)
