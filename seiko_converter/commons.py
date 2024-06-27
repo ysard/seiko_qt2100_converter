@@ -25,13 +25,6 @@ import logging
 # Logging
 LOGGER_NAME = "seiko-converter"
 LOG_LEVEL = "INFO"
-LOG_LEVELS = {
-    "debug": logging.DEBUG,
-    "info": logging.INFO,
-    "warning": logging.WARNING,
-    "error": logging.ERROR,
-    "notset": logging.NOTSET,
-}
 
 ################################################################################
 _logger = logging.getLogger(LOGGER_NAME)
@@ -56,11 +49,15 @@ def log_level(level):
         From logger to handlers. Handlers receive log messages only if
         the main logger doesn't filter them.
     """
+    level = level.upper()
+    if level == "NONE":
+        logging.disable()
+        return
     # Main logger
-    _logger.setLevel(level.upper())
+    _logger.setLevel(level)
     # Handlers
     [
-        handler.setLevel(level.upper())
+        handler.setLevel(level)
         for handler in _logger.handlers
         if handler.__class__
         in (logging.StreamHandler, logging.handlers.RotatingFileHandler)
