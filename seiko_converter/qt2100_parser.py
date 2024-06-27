@@ -206,6 +206,9 @@ class SeikoQT2100Parser:
                 data = read_from_buffer(2)
                 if data is None:
                     break
+                elif b"\x1b" in data:
+                    LOGGER.error("Unexpected ESC command encountered")
+                    break
 
                 data = unpack("BB", data)
                 byte3, ukn_flag = data  # TODO: For now byte4 is not used
@@ -242,9 +245,13 @@ class SeikoQT2100Parser:
                 if data is None:
                     break
 
-                # Extract values: val1, val2, val3
-                measure = int(hexlify(data)) / 1000 * sign
-                LOGGER.debug("> %s", measure)
+                try:
+                    # Extract values: val1, val2, val3
+                    measure = int(hexlify(data)) / 1000 / 1000 * sign
+                    LOGGER.debug("> %s", measure)
+                except ValueError:
+                    LOGGER.error("Unexpected end of data")
+                    break
 
                 self.parsed_values.append(measure)
 
