@@ -167,6 +167,10 @@ class SeikoQT2100Parser:
                     break
                 self.rate_mode = data[0]
                 LOGGER.debug("Rate mode found: %s", self.get_rate_mode())
+                escmode = False
+                seiko_mode = False
+                timestamp_mode = False
+                continue
 
             # Begin to extract values only; ESC 1
             if escmode and databyte == ord("1"):
