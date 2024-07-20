@@ -113,6 +113,21 @@ Graph options:
                         (default: True)
 ```
 
+## Test data description
+
+- seiko_qt2100_A10S.raw:
+
+  109 measures in A10S mode; strict alternance between negative and positive values (ticks and tocks)
+
+- seiko_qt2100_B1S_1.raw:
+
+  14 measures in B1S mode; only negative values; 4 values + 6 errors + 1 outlier + 3 value
+
+- seiko_qt2100_B1S_2.raw:
+
+  19 measures in B1S mode; 4 values + 1 error + 5 values + 3 errors + 1 value + 1 error + 4 values
+
+
 ## License; Free and Open Source
 
 Seiko converter is released under the AGPL (Affero General Public License).
