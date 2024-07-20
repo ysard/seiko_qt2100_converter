@@ -156,6 +156,12 @@ class SeikoQT2100Parser:
             except StopIteration:
                 LOGGER.warning("Parsing end: Partial data => reject")
 
+        def esc_tear_down():
+            """Close ESC mode, waiting for next measure"""
+            escmode = False
+            seiko_mode = False
+            timestamp_mode = False
+
         for databyte in it_raw_data:
             if databyte == 0x1B:
                 escmode = True
@@ -169,9 +175,7 @@ class SeikoQT2100Parser:
                     break
                 self.rate_mode = data[0]
                 LOGGER.debug("Rate mode found: %s", self.get_rate_mode())
-                escmode = False
-                seiko_mode = False
-                timestamp_mode = False
+                esc_tear_down()
                 continue
 
             # Begin to extract values only; ESC 1
@@ -209,15 +213,14 @@ class SeikoQT2100Parser:
                 self.print_mode = print_mode
                 LOGGER.debug("Print mode found: %s", self.get_print_mode())
 
-                data = read_from_buffer(2)
+                data = read_from_buffer(1)
                 if data is None:
                     break
-                elif b"\x1b" in data:
+                elif data == b"\x1b":
                     LOGGER.error("Unexpected ESC command encountered")
                     break
 
-                data = unpack("BB", data)
-                byte3, ukn_flag = data  # TODO: For now byte4 is not used
+                byte3 = unpack("B", data)[0]
 
                 # 1st bit is the sign flag
                 sign = -1 if byte3 & 1 else 1
@@ -228,10 +231,14 @@ class SeikoQT2100Parser:
                     # => no value, Skip value
                     # self.parsed_values.append(f"{sign_chr} OUT OF RANGE")
                     self.parsed_values.append(None)
+                    esc_tear_down()
                     continue
 
-                # Remove the sign flag, and get the gat mode in use
-                self.acquisition_mode = byte3 & 32
+                # TODO: For now byte4 is not used
+                ukn_flag = read_from_buffer(1)
+
+                # Remove the sign flag, and get the mode in use
+                self.acquisition_mode = byte3 & 32  # 0x20
                 if self.acquisition_mode in self.ACQUISITION_MODES:
                     # 0 or 32 (0x20)
                     LOGGER.debug(
@@ -261,9 +268,7 @@ class SeikoQT2100Parser:
 
                 self.parsed_values.append(measure)
 
-            escmode = False
-            seiko_mode = False
-            timestamp_mode = False
+            esc_tear_down()
 
         LOGGER.info("Parsed %s values", len(self.parsed_values))
 
