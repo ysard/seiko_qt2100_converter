@@ -45,6 +45,14 @@ As shown in the image above, dots resulting from measurement error on the
 device's side are corrected using the most neutral value possible
 (the average of the tick or tock values) and clearly displayed on the figure (red dot).
 
+Here is another example in B1S mode:
+
+![](./images/B1S_1.webp)
+
+```commandline
+$ python -m seiko_converter -i test_data/seiko_qt2100_B1S_1.raw -g
+```
+
 ### Horizontal or vertical layout
 
 Horizontal layout is closer to the rendering of modern timegraphers,
