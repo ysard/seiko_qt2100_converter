@@ -131,9 +131,11 @@ class SeikoQT2100Parser:
 
         Flags:
 
-            - 0x20: Measurement error
-            - 0x80: Hz acquisition mode (Quartz watch (LCD or stepper))
-            - 0x00: Second acquisition mode (default)
+            - 0x80: Measurement error
+            - 0x20: Acquisition mode
+                1: Hz (Quartz watch (LCD or stepper))
+                0: Second (default)
+            - 0x10: First value of a series ?
             - 0x01: Negative sign of the measured value
 
         RetroPrinter project adds timestamps in the file for every value with
