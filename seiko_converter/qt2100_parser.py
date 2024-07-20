@@ -243,15 +243,15 @@ class SeikoQT2100Parser:
                     # 0 or 32 (0x20)
                     LOGGER.debug(
                         "Acquisition mode: %s; %d",
-                        self.ACQUISITION_MODES[self.acquisition_mode],
+                        self.get_acquisition_mode(),
                         self.acquisition_mode,
                     )
                 else:
                     LOGGER.error("Acquisition mode: Unknwon; %d", self.acquisition_mode)
                     raise ValueError
 
-                if byte3 & 16 == 16:
-                    # 0x10 flag, in 0x30 with 0x20 acquisition mode
+                if byte3 & 16 == 16:  # 0x10
+                    # ex: in 0x30 with 0x20 acquisition mode (Hz)
                     LOGGER.warning("1st val of Hz mode ?; %s", hex(byte3 & ~1))
 
                 data = read_from_buffer(3)
