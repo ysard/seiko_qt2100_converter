@@ -260,7 +260,7 @@ class SeikoQT2100Parser:
 
                 try:
                     # Extract values: val1, val2, val3
-                    measure = int(hexlify(data)) / 1000 / 1000 * sign
+                    measure = int(hexlify(data)) / 1000 * sign # !!!! uncertain conversion
                     LOGGER.debug("> %s", measure)
                 except ValueError:
                     LOGGER.error("Unexpected end of data")
