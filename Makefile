@@ -9,8 +9,9 @@ run:
 	#python -m $(PACKAGE_NAME) -i "./test_data/seiko_qt2100_999999.raw" -g --csv -d
 
 clean:
-	@-rm -rf $(PACKAGE_NAME).egg-info/
-	@rm *.csv *.pdf
+	rm -rf *.egg-info
+	python setup.py clean --all
+	@-rm *.csv *.pdf
 
 # Tests
 tests:
@@ -35,14 +36,19 @@ install:
 	pip install -e .[dev]
 
 uninstall:
-	pip $(PACKAGE_NAME) uninstall
+	pip seiko-converter uninstall
 
-sdist:
+sdist: clean
 	@echo Building the distribution package...
-	python setup.py sdist
+	python -m build --sdist
 
-upload: clean sdist
-	python setup.py bdist_wheel
+wheel: clean
+	@echo Building the wheel package...
+	python -m build --wheel
+
+upload:
+	@echo Building the distribution + wheel packages...
+	python -m build
 	twine upload dist/* -r pypi
 
 check_setups:
@@ -56,10 +62,14 @@ archive:
 	# Create upstream src archive
 	git archive HEAD --prefix='seiko-converter-$(PROJECT_VERSION).orig/' | gzip > ../seiko-converter-$(PROJECT_VERSION).orig.tar.gz
 
-sync_manpage:
-	-help2man -o debian/$(PACKAGE_NAME).1 $(PACKAGE_NAME)
+reset_patches:
+	# Force the removal of the current patches
+	-quilt pop -af
 
-debianize: archive
+sync_manpage:
+	-help2man -o debian/seiko-converter.1 $(PACKAGE_NAME)
+
+debianize: archive reset_patches
 	dpkg-buildpackage -us -uc -b -d
 
 debcheck:
