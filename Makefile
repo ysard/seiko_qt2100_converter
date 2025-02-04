@@ -1,14 +1,15 @@
 PROJECT_VERSION=$(shell python setup.py --version)
+PACKAGE_NAME=seiko_converter
 
 run:
-	python -m seiko_converter -i "./test_data/seiko_qt2100_A10S_timestamped.raw" -g --csv -d
-	python -m seiko_converter -i "./test_data/seiko_qt2100_A10S.raw" -g --csv -d
-	python -m seiko_converter -i "./test_data/seiko_qt2100_B1S_1.raw" -g --csv -d
-	python -m seiko_converter -i "./test_data/seiko_qt2100_B1S_2.raw" -g --csv -d
-	#python -m seiko_converter -i "./test_data/seiko_qt2100_999999.raw" -g --csv -d
+	python -m $(PACKAGE_NAME) -i "./test_data/seiko_qt2100_A10S_timestamped.raw" -g --csv -d
+	python -m $(PACKAGE_NAME) -i "./test_data/seiko_qt2100_A10S.raw" -g --csv -d
+	python -m $(PACKAGE_NAME) -i "./test_data/seiko_qt2100_B1S_1.raw" -g --csv -d
+	python -m $(PACKAGE_NAME) -i "./test_data/seiko_qt2100_B1S_2.raw" -g --csv -d
+	#python -m $(PACKAGE_NAME) -i "./test_data/seiko_qt2100_999999.raw" -g --csv -d
 
 clean:
-	@-rm -rf seiko_converter.egg-info/
+	@-rm -rf $(PACKAGE_NAME).egg-info/
 	@rm *.csv *.pdf
 
 # Tests
@@ -16,12 +17,12 @@ tests:
 	pytest tests
 
 coverage:
-	pytest --cov=seiko_converter --cov-report term-missing -vv
+	pytest --cov=$(PACKAGE_NAME) --cov-report term-missing -vv
 	@-coverage-badge -f -o images/coverage.svg
 
 docstring_coverage:
-	interrogate -v seiko_converter/ \
-	    -e seiko_converter/__init__.py \
+	interrogate -v $(PACKAGE_NAME)/ \
+	    -e $(PACKAGE_NAME)/__init__.py \
 	    --badge-style flat --generate-badge images/
 
 # development & release cycle
@@ -34,7 +35,7 @@ install:
 	pip install -e .[dev]
 
 uninstall:
-	pip seiko_converter uninstall
+	pip $(PACKAGE_NAME) uninstall
 
 sdist:
 	@echo Building the distribution package...
@@ -48,7 +49,7 @@ check_setups:
 	pyroma .
 
 check_code:
-	prospector seiko_converter/
+	prospector $(PACKAGE_NAME)/
 	check-manifest
 
 archive:
