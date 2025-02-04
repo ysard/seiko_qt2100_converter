@@ -56,6 +56,9 @@ archive:
 	# Create upstream src archive
 	git archive HEAD --prefix='seiko-converter-$(PROJECT_VERSION).orig/' | gzip > ../seiko-converter-$(PROJECT_VERSION).orig.tar.gz
 
+sync_manpage:
+	-help2man -o debian/$(PACKAGE_NAME).1 $(PACKAGE_NAME)
+
 debianize: archive
 	dpkg-buildpackage -us -uc -b -d
 
