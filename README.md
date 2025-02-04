@@ -29,6 +29,14 @@ specifications have either never been published or have long been lost.
 The specific aim of this project is to process the print data from this device, making it readable,
 usable and printable again according to current modern standards.
 
+### Note:
+Neither the owners of this device, contacted on “enthusiasts” forums,
+nor Seiko, wish to share the documentation for this device, which after more than 30 years
+still seems to be an industrial secret, or intended only for a restricted circle of insiders.
+As a result, many assumptions are being made about the precise operating
+or simply about the units used in the graphs.
+We welcome any contributions you can make to fill these gaps!
+
 ## Features
 
 ![](./images/A10S_70s.webp)![](./images/A10S_rp.webp)![](./images/A10S.webp)
