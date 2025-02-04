@@ -1,4 +1,4 @@
-[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/ysard/seiko_converter)](https://github.com/ysard/libre-printer/releases/latest/)
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/ysard/seiko_qt2100_converter)](https://github.com/ysard/seiko_qt2100_converter/releases/latest/)
 [![version on pypi](https://img.shields.io/pypi/v/seiko_converter.svg)](https://pypi.python.org/pypi/seiko_converter)
 [![version on pypi](https://img.shields.io/pypi/pyversions/seiko_converter)](https://pypi.python.org/pypi/seiko_converter)
 <!--[![tests status](./images/tests.svg)](https://github.com/ysard/seiko_qt2100_converter/actions)-->
