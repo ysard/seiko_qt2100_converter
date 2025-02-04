@@ -67,7 +67,9 @@ reset_patches:
 	-quilt pop -af
 
 sync_manpage:
-	-help2man -o debian/seiko-converter.1 $(PACKAGE_NAME)
+	-help2man -o debian/seiko_converter.1 \
+	--name="Generate graphs based on the raw data produced by the Seiko Qt-2100 Timegrapher device" \
+	$(PACKAGE_NAME)
 
 debianize: archive reset_patches
 	dpkg-buildpackage -us -uc -b -d
