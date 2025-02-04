@@ -10,4 +10,7 @@ Vcs-Git: https://github.com/ysard/seiko_qt2100_converter
 Package: seiko-converter
 Architecture: all
 Depends: dpkg (>= 1.16.1), adduser (>= 3.11), python3 (>= 3.6), ${python3:Depends}, ${misc:Depends}
-Description: Seiko converter is a software allowing to generate graphs based on the raw data produced by the Seiko Qt-2100 Timegrapher device.
+Description: A software to generate graphs based on the raw data produced by the Seiko Qt-2100 Timegrapher device
+  The specific aim of this project is to process the print data from this
+  device, making it readable, usable and printable again according to current
+  modern standards.
